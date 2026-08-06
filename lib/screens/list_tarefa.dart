@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import '../database/tarefadao.dart';
 import '../model/tarefa.dart';
 import 'form_tarefa.dart';
 
 
 class ListaTarefa extends StatefulWidget {
 
+  const ListaTarefa({super.key});
+
   @override
-  State<StatefulWidget> createState() {
+  State<ListaTarefa> createState() {
     return ListaTarefaState();
   }
 
@@ -16,6 +19,27 @@ class ListaTarefa extends StatefulWidget {
 class ListaTarefaState extends State<ListaTarefa> {
 
   List<Tarefa> tarefas = [];
+
+  final TarefaDao dao = TarefaDao();
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    carregarTarefas();
+  }
+
+
+  void carregarTarefas() async {
+
+    final lista = await dao.findAll();
+
+    setState(() {
+      tarefas = lista;
+    });
+
+  }
 
 
   @override
@@ -30,9 +54,9 @@ class ListaTarefaState extends State<ListaTarefa> {
 
       floatingActionButton: FloatingActionButton(
 
-        onPressed: () {
+        onPressed: () async {
 
-          final Future future = Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
@@ -42,13 +66,7 @@ class ListaTarefaState extends State<ListaTarefa> {
           );
 
 
-          future.then((tarefa) {
-
-            setState(() {
-              tarefas.add(tarefa);
-            });
-
-          });
+          carregarTarefas();
 
         },
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../database/tarefadao.dart';
 import '../model/tarefa.dart';
+import '../components/editor.dart';
 
 
 class FormaTarefa extends StatefulWidget {
@@ -48,41 +50,19 @@ class FormaTarefaState extends State<FormaTarefa> {
 
         children: [
 
-          Padding(
-            padding: const EdgeInsets.all(16),
-
-            child: TextField(
-
-              controller: controladorDescricao,
-
-              style: const TextStyle(fontSize: 20),
-
-              decoration: const InputDecoration(
-                icon: Icon(Icons.edit),
-                labelText: "Tarefa",
-                hintText: "Informe a descrição da tarefa",
-              ),
-
-            ),
+          Editor(
+            controlador: controladorDescricao,
+            rotulo: "Tarefa",
+            dica: "Informe a descrição da tarefa",
+            icone: Icons.edit,
           ),
 
 
-          Padding(
-            padding: const EdgeInsets.all(16),
-
-            child: TextField(
-
-              controller: controladorObs,
-
-              style: const TextStyle(fontSize: 20),
-
-              decoration: const InputDecoration(
-                icon: Icon(Icons.edit),
-                labelText: "OBS",
-                hintText: "Informe a observação da tarefa",
-              ),
-
-            ),
+          Editor(
+            controlador: controladorObs,
+            rotulo: "OBS",
+            dica: "Informe a observação da tarefa",
+            icone: Icons.edit,
           ),
 
         ],
@@ -97,10 +77,14 @@ class FormaTarefaState extends State<FormaTarefa> {
   void criarTarefa(BuildContext context) {
 
     final tarefa = Tarefa(
+      0,
+      0,
       controladorDescricao.text,
       controladorObs.text,
     );
 
+    TarefaDao dao = TarefaDao();
+    dao.add(tarefa);
 
     Navigator.pop(context, tarefa);
 
