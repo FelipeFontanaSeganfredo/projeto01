@@ -7,6 +7,7 @@ class Editor extends StatelessWidget {
   final String rotulo;
   final String dica;
   final IconData? icone;
+  final String? Function(String?)? validator;
 
 
   const Editor({
@@ -15,6 +16,7 @@ class Editor extends StatelessWidget {
     required this.rotulo,
     required this.dica,
     this.icone,
+    this.validator,
   });
 
 
@@ -25,7 +27,7 @@ class Editor extends StatelessWidget {
 
       padding: const EdgeInsets.all(16),
 
-      child: TextField(
+      child: TextFormField(
 
         controller: controlador,
 
@@ -40,6 +42,8 @@ class Editor extends StatelessWidget {
           hintText: dica,
 
         ),
+
+        validator: validator,
 
       ),
 

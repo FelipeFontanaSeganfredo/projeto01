@@ -3,6 +3,13 @@ class Tarefa {
   int status;
   String descricao;
   String obs;
+  int? categoriaId;
 
-  Tarefa(this.id, this.status, this.descricao, this.obs);
+  Tarefa(
+    this.id,
+    this.status,
+    this.descricao,
+    this.obs, {
+    this.categoriaId,
+  });
 }

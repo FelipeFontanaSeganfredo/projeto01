@@ -11,6 +11,7 @@ class TarefaDao {
     tarefaMap['descricao'] = tarefa.descricao;
     tarefaMap['obs'] = tarefa.obs;
     tarefaMap['status'] = tarefa.status;
+    tarefaMap['categoria_id'] = tarefa.categoriaId;
     return tarefaMap;
   }
 
@@ -20,7 +21,8 @@ class TarefaDao {
       Tarefa tarefa = Tarefa(row['id'],
           row['status'],
           row['descricao'],
-          row['obs']);
+          row['obs'],
+          categoriaId: row['categoria_id']);
       tarefas.add(tarefa);
     }
     return tarefas;
@@ -51,5 +53,15 @@ class TarefaDao {
     List<Map<String, dynamic>> result = await db.query(_tableName);
     List<Tarefa> tarefas = toList(result);
     return tarefas;
+  }
+
+  Future<int> limparCategoria(int categoriaId) async{
+    Database db = await getDatabase();
+    return db.update(
+      _tableName,
+      {'categoria_id': null},
+      where: 'categoria_id = ?',
+      whereArgs: [categoriaId],
+    );
   }
 }
