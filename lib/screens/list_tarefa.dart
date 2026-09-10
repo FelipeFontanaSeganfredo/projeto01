@@ -29,13 +29,17 @@ class ListaTarefaState extends State<ListaTarefa> {
   final ImagemDao imagemDao = ImagemDao();
   final CategoriaDao categoriaDao = CategoriaDao();
 
+  int _geracao = 0;
+
   @override
   void initState() {
     super.initState();
     carregarTarefas();
   }
 
-  void carregarTarefas() async {
+  Future<void> carregarTarefas() async {
+    final int geracao = ++_geracao;
+
     final lista = await dao.findAll();
 
     final mapaCapas = <int, Imagem>{};
@@ -51,6 +55,8 @@ class ListaTarefaState extends State<ListaTarefa> {
     for (final categoria in listaCategorias) {
       mapaCategorias[categoria.id] = categoria;
     }
+
+    if (!mounted || geracao != _geracao) return;
 
     setState(() {
       tarefas = lista;
@@ -75,7 +81,7 @@ class ListaTarefaState extends State<ListaTarefa> {
               },
             ),
           );
-          carregarTarefas();
+          await carregarTarefas();
         },
         child: const Icon(Icons.add),
       ),
@@ -177,7 +183,7 @@ class ListaTarefaState extends State<ListaTarefa> {
               },
             ),
           );
-          carregarTarefas();
+          await carregarTarefas();
         },
       ),
     );
@@ -186,11 +192,11 @@ class ListaTarefaState extends State<ListaTarefa> {
   void mudarStatus(Tarefa tarefa) async {
     tarefa.status = tarefa.status == 0 ? 1 : 0;
     await dao.update(tarefa);
-    carregarTarefas();
+    await carregarTarefas();
   }
 
   void excluirTarefa(Tarefa tarefa) async {
     await dao.delete(tarefa.id);
-    carregarTarefas();
+    await carregarTarefas();
   }
 }

@@ -261,35 +261,43 @@ class FormaTarefaState extends State<FormaTarefa> {
       return;
     }
 
-    final int id = widget.tarefa?.id ?? 0;
-    final int status = widget.tarefa?.status ?? 0;
+    try {
+      final int id = widget.tarefa?.id ?? 0;
+      final int status = widget.tarefa?.status ?? 0;
 
-    final tarefa = Tarefa(
-      id,
-      status,
-      controladorDescricao.text,
-      controladorObs.text,
-      categoriaId: _categoriaId,
-    );
+      final tarefa = Tarefa(
+        id,
+        status,
+        controladorDescricao.text,
+        controladorObs.text,
+        categoriaId: _categoriaId,
+      );
 
-    int tarefaId = id;
-    if (widget.tarefa == null) {
-      tarefaId = await _tarefaDao.add(tarefa);
-    } else {
-      await _tarefaDao.update(tarefa);
-    }
+      int tarefaId = id;
+      if (widget.tarefa == null) {
+        tarefaId = await _tarefaDao.add(tarefa);
+      } else {
+        await _tarefaDao.update(tarefa);
+      }
 
-    for (final imagem in _imagensNovas) {
-      imagem.tarefaId = tarefaId;
-      await _imagemDao.add(imagem);
-    }
+      for (final imagem in _imagensNovas) {
+        imagem.tarefaId = tarefaId;
+        await _imagemDao.add(imagem);
+      }
 
-    for (final idImagem in _imagensRemovidas) {
-      await _imagemDao.delete(idImagem);
-    }
+      for (final idImagem in _imagensRemovidas) {
+        await _imagemDao.delete(idImagem);
+      }
 
-    if (mounted) {
-      Navigator.pop(context, tarefa);
+      if (mounted) {
+        Navigator.pop(context, tarefa);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao salvar: $e')),
+        );
+      }
     }
   }
 
